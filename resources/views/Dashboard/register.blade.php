@@ -97,6 +97,20 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
 .footer-icon { color:var(--orange); }
 .footer-copy { font-size:12px; color:#a8a29e; }
 
+/* Alert styles */
+.alert-success { background:#dcfce7; border:1px solid #22c55e; border-radius:12px; padding:16px; color:#15803d; margin-bottom:24px; display:flex; align-items:center; gap:12px; animation:slideDown .3s ease; }
+.alert-success::before { content:'✓'; font-size:1.2rem; font-weight:bold; }
+
+.alert-error { background:#fee2e2; border:1px solid #ef4444; border-radius:12px; padding:16px; color:#991b1b; margin-bottom:24px; display:flex; align-items:center; gap:12px; animation:slideDown .3s ease; }
+.alert-error::before { content:'✕'; font-size:1.2rem; font-weight:bold; }
+
+.form-errors { background:#fee2e2; border:1px solid #ef4444; border-radius:12px; padding:20px; margin-bottom:24px; }
+.form-errors ul { list-style:none; }
+.form-errors li { color:#991b1b; font-size:14px; margin-bottom:8px; padding-left:24px; position:relative; }
+.form-errors li::before { content:'•'; position:absolute; left:8px; }
+
+@keyframes slideDown { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
+
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
 
 @media(max-width:640px) {
@@ -142,8 +156,23 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
     </div>
   </div>
 </nav>
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="badge-dot"></span>Barangay Edition · Free to use</div>
 
-<p class="deco-sub">Your neighborhood store,<br>powered by smart management.</p>
+    <div class="big-icon-wrap">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <path d="M8 22 L28 6 L48 22" stroke="white" stroke-width="3.5" stroke-linejoin="round" fill="none"/>
+        <rect x="10" y="22" width="36" height="28" rx="3" fill="white" fill-opacity="0.18" stroke="white" stroke-width="2.5"/>
+        <rect x="20" y="34" width="16" height="16" rx="2" fill="white"/>
+        <rect x="12" y="26" width="10" height="7" rx="1.5" fill="white" fill-opacity="0.75"/>
+        <rect x="34" y="26" width="10" height="7" rx="1.5" fill="white" fill-opacity="0.75"/>
+      </svg>
+    </div>
+
+  <!-- Decorative panel -->
+      <p class="deco-sub">Your neighborhood store,<br>powered by smart management.</p>
       <div class="deco-tags">
         <span>Inventory</span>
         <span>Sales</span>
@@ -152,38 +181,63 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
       </div>
     </div>
     <div class="deco-footer">v1.0 · Barangay Edition</div>
-  </aside>
+    </div>
+    </div>
 
+<!-- Success message from login redirect -->
+@if(session('success'))
+<div class="alert-success" style="max-width:860px; margin:40px auto 0;">
+  {{ session('success') }}
+</div>
+@endif
 
-<form method="POST" action="/api/register"> <!-- Name --> 
-    <div class="form-group"> 
-    
-       <label for="name">Full Name</label> 
-       <input type="text" id="name" name="name" placeholder="Enter your name" required> 
-   </div> <!-- Email --> 
-   
-   <div class="form-group"> 
-    
-     <label for="email">Email Address</label> 
-     <input type="email" id="email" name="email" placeholder="Enter your email" required>
-  </div> <!-- Password --> 
- 
+<!-- Validation errors -->
+@if ($errors->any())
+<div class="form-errors" style="max-width:860px; margin:40px auto 0;">
+  <ul>
+    @foreach ($errors->all() as $error)
+    <li>{{ $error }}</li>
+    @endforeach
+  </ul>
+</div>
+@endif
+
+<form method="POST" action="/Dashboard/register" style="max-width:860px; margin:40px auto 0; padding:0 24px;"> 
+  @csrf
+  <!-- Name --> 
   <div class="form-group"> 
-    
+    <label for="name">Full Name</label> 
+    <input type="text" id="name" name="name" placeholder="Enter your name" value="{{ old('name') }}" required> 
+    @error('name')<span style="color:#991b1b; font-size:12px;">{{ $message }}</span>@enderror
+  </div> 
+  
+  <!-- Email --> 
+  <div class="form-group"> 
+    <label for="email">Email Address</label> 
+    <input type="email" id="email" name="email" placeholder="Enter your email" value="{{ old('email') }}" required>
+    @error('email')<span style="color:#991b1b; font-size:12px;">{{ $message }}</span>@enderror
+  </div> 
+  
+  <!-- Password --> 
+  <div class="form-group"> 
     <label for="password">Password</label> 
     <input type="password" id="password" name="password" placeholder="Enter password" required> 
- </div> <!-- Confirm Password --> 
- 
- <div class="form-group"> 
+    @error('password')<span style="color:#991b1b; font-size:12px;">{{ $message }}</span>@enderror
+  </div> 
+  
+  <!-- Confirm Password --> 
+  <div class="form-group"> 
     <label for="password_confirmation">Confirm Password</label> 
     <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm password" required>
- </div> <!-- Submit --> 
- 
- <button type="submit" class="btn">Register</button> 
+    @error('password_confirmation')<span style="color:#991b1b; font-size:12px;">{{ $message }}</span>@enderror
+  </div> 
+  
+  <!-- Submit --> 
+  <button type="submit" class="btn">Register</button> 
 </form> 
 
-<div class="footer"> Already have an account?
-     <a href="/Dashboard/login">Login</a> 
+<div class="footer" style="margin-top:40px;"> Already have an account?
+  <a href="/Dashboard/login">Login</a> 
 </div>
 
 </script>
