@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, 'index']);
 
 Route::get('/Dashboard/register', function () {
     return view('dashboard.register');
@@ -18,3 +18,9 @@ Route::get('/Dashboard/login', function () {
 })->name('login');
 
 Route::post('/Dashboard/login', [AuthController::class, 'login']);
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+});
