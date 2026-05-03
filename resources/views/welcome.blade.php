@@ -137,10 +137,10 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
       </div>
     </div>
     <div class="nav-actions">
-      <a href="/Dashboard/login" class="btn-ghost">Sign in</a>
-      <a href="/Dashboard/register" class="btn-solid">Get started</a>
+      <a href="/dashboard/login" class="btn-ghost">Sign in</a>
+      <a href="/dashboard/register" class="btn-solid">Get started</a>
     </div>
-  </div>
+  </div>\
 </nav>
 
 <!-- Hero -->
@@ -166,11 +166,11 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
     <p class="hero-sub">A complete store management system built for Asian sari-sari stores. Inventory, sales, POS, and reports — all in one place.</p>
 
     <div class="hero-cta">
-      <a href="/Dashboard/register" class="cta-primary">
+      <a href="/dashboard/register" class="cta-primary">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M2 16c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         Create free account
       </a>
-      <a href="/Dashboard/login" class="cta-secondary">
+      <a href="/dashboard/login" class="cta-secondary">
         Sign in to my store
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
@@ -178,7 +178,14 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
     <p class="hero-note">No credit card required &nbsp;·&nbsp; Set up in minutes</p>
   </div>
 
-  <div class="features" id="features"></div>
+  <div class="features">
+    @foreach($features as $index => $feature)
+    <div class="feature-card" style="animation-delay: {{ ($index * 0.1 + 0.5) }}s">
+      <div class="feature-icon">{{ $feature['icon'] }}</div>
+      <div class="feature-text"><strong>{{ $feature['label'] }}</strong><span>{{ $feature['desc'] }}</span></div>
+    </div>
+    @endforeach
+  </div>
 </section>
 
 <!-- Auth cards -->
@@ -190,7 +197,7 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
       </div>
       <h2 class="auth-card-title">Don't have an account?</h2>
       <p class="auth-card-desc">Sign in to access your store dashboard, manage inventory and view your sales.</p>
-      <a href="/Dashboard/login" class="auth-card-btn login-btn">
+      <a href="/dashboard/login" class="auth-card-btn login-btn">
         Sign in
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
@@ -208,7 +215,7 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
       </div>
       <h2 class="auth-card-title">Don't have an account? Free to join!</h2>
       <p class="auth-card-desc">Create your account now and start managing your sari-sari store the smart way — for free.</p>
-      <a href="/Dashboard/register" class="auth-card-btn register-btn">
+      <a href="/dashboard/register" class="auth-card-btn register-btn">
         Create free account
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
@@ -229,25 +236,6 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
 
 <script>
 document.getElementById('yr').textContent = new Date().getFullYear();
-
-const features = [
-  { icon: '📦', label: 'Inventory', desc: 'Track every item in real-time' },
-  { icon: '🧾', label: 'Sales & POS', desc: 'Fast checkout, clear receipts' },
-  { icon: '📊', label: 'Reports', desc: 'Daily, weekly & monthly insights' },
-  { icon: '👥', label: 'Accounts', desc: 'Multi-user with role control' },
-];
-
-const grid = document.getElementById('features');
-features.forEach((f, i) => {
-  const card = document.createElement('div');
-  card.className = 'feature-card';
-  card.style.animationDelay = (i * 0.1 + 0.5) + 's';
-  card.innerHTML = `
-    <div class="feature-icon">${f.icon}</div>
-    <div class="feature-text"><strong>${f.label}</strong><span>${f.desc}</span></div>
-  `;
-  grid.appendChild(card);
-});
 </script>
 </body>
 </html>
