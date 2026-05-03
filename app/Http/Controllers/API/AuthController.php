@@ -14,35 +14,26 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request): JsonResponse
+    public function register(RegisterRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+        $validated = $request->validated();
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+        try {
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'User registered successfully',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ], 201);
+            return redirect()->route('login')->with('success', 'Registration successful! Please sign in with your credentials.');
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'email' => 'An error occurred during registration. Please try again.',
+            ])->withInput($request->only('name', 'email'));
+        }
     }
 
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request)
     {
         $credentials = $request->validate([
             'email' => 'required|email',
@@ -50,7 +41,9 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return back()->withErrors([
+                'email' => 'Invalid credentials.',
+            ])->withInput($request->only('email'));
         }
 
         $user = Auth::user();
@@ -58,30 +51,24 @@ class AuthController extends Controller
         if (!$user || !$user->is_active) {
             Auth::logout();
 
-            return response()->json([
-                'message' => 'Your account has been deactivated.',
-            ], 403);
+            return back()->withErrors([
+                'email' => 'Your account has been deactivated.',
+            ])->withInput($request->only('email'));
         }
 
-        try {
-            // Revoke all previous tokens and issue a fresh one
+        $request->session()->regenerate();
 
-            return response()->json([
-                'message' => 'Login successful.',
-                'user'    => $this->userResource($user),
-                'token_type' => 'Bearer',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred during login.',
-            ], 500);
-        }
+        return redirect()->route('home')->with('success', 'Login successful!');
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'User logged out successfully']);
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Logged out successfully!');
     }
 
     private function userResource(User $user): array
