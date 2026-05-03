@@ -97,7 +97,14 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
 .footer-icon { color:var(--orange); }
 .footer-copy { font-size:12px; color:#a8a29e; }
 
+/* Alert styles */
+.alert-success { background:#dcfce7; border:1px solid #22c55e; border-radius:12px; padding:16px; color:#15803d; margin-bottom:24px; display:flex; align-items:center; gap:12px; animation:slideDown .3s ease; }
+.alert-success::before { content:'✓'; font-size:1.2rem; font-weight:bold; }
+.alert-error { background:#fee2e2; border:1px solid #ef4444; border-radius:12px; padding:16px; color:#991b1b; margin-bottom:24px; display:flex; align-items:center; gap:12px; animation:slideDown .3s ease; }
+.alert-error::before { content:'✕'; font-size:1.2rem; font-weight:bold; }
+
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+@keyframes slideDown { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
 
 @media(max-width:640px) {
   .btn-ghost{display:none;}
@@ -143,12 +150,22 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
   </div>
 </nav>
 
-<div class="auth-wrap">
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="badge-dot"></span>Barangay Edition · Free to use</div>
+
+    <div class="big-icon-wrap">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <path d="M8 22 L28 6 L48 22" stroke="white" stroke-width="3.5" stroke-linejoin="round" fill="none"/>
+        <rect x="10" y="22" width="36" height="28" rx="3" fill="white" fill-opacity="0.18" stroke="white" stroke-width="2.5"/>
+        <rect x="20" y="34" width="16" height="16" rx="2" fill="white"/>
+        <rect x="12" y="26" width="10" height="7" rx="1.5" fill="white" fill-opacity="0.75"/>
+        <rect x="34" y="26" width="10" height="7" rx="1.5" fill="white" fill-opacity="0.75"/>
+      </svg>
+    </div>
 
   <!-- Decorative panel -->
-
-  
-     
       <p class="deco-sub">Your neighborhood store,<br>powered by smart management.</p>
       <div class="deco-tags">
         <span>Inventory</span>
@@ -158,7 +175,7 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
       </div>
     </div>
     <div class="deco-footer">v1.0 · Barangay Edition</div>
-  </aside>
+    </div>
 
   <!-- Form panel -->
 
@@ -173,10 +190,23 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
     </div>
   </div>
 
+  <!-- Success alert -->
+  @if(session('success'))
+    <div class="alert-success">
+      {{ session('success') }}
+    </div>
+  @endif
+
   <!-- Error alert -->
   @if(session('error'))
     <div class="alert-error">
       {{ session('error') }}
+    </div>
+  @endif
+
+  @if($errors->any())
+    <div class="alert-error">
+      <strong>Oops!</strong> Please check the errors below.
     </div>
   @endif
 
@@ -244,3 +274,5 @@ function togglePass() {
   input.type = input.type === 'password' ? 'text' : 'password';
 }
 </script>
+</body>
+</html>
