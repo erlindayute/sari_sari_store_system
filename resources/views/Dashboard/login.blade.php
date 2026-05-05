@@ -144,8 +144,8 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
       </div>
     </div>
     <div class="nav-actions">
-      <a href="/Dashboard/login" class="btn-ghost">Sign in</a>
-      <a href="/Dashboard/register" class="btn-ghost">Register</a>
+      <a href="/dashboard/login" class="btn-ghost">Sign in</a>
+      <a href="/dashboard/register" class="btn-ghost">Register</a>
     </div>
   </div>
 </nav>
