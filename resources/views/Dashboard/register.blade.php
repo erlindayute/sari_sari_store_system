@@ -152,7 +152,7 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
       </div>
     </div>
     <div class="nav-actions">
-      <a href="/Dashboard/login" class="btn-ghost">Sign in</a>
+      <a href="/dashboard/login" class="btn-ghost">Sign in</a>
     </div>
   </div>
 </nav>
@@ -202,7 +202,7 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
 </div>
 @endif
 
-<form method="POST" action="/Dashboard/register" style="max-width:860px; margin:40px auto 0; padding:0 24px;"> 
+<form method="POST" action="/dashboard/register" style="max-width:860px; margin:40px auto 0; padding:0 24px;"> 
   @csrf
   <!-- Name --> 
   <div class="form-group"> 
@@ -237,7 +237,7 @@ body { min-height:100vh; background:var(--cream); font-family:'Nunito',sans-seri
 </form> 
 
 <div class="footer" style="margin-top:40px;"> Already have an account?
-  <a href="/Dashboard/login">Login</a> 
+  <a href="/dashboard/login">Login</a> 
 </div>
 
 </script>
