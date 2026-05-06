@@ -3,9 +3,18 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\HomeController;
+use App\Models\Product;
+use App\Http\Controllers\API\ProductController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
-Route::get('/', [WelcomeController::class, 'index']);
+Route::get('/', function () {
+    return Auth::check()
+        ? redirect()->route('welcome')
+        : view('welcome');
+});
+
+Route::get('/welcome', [WelcomeController::class, 'index'])->name('welcome');
 
 Route::get('/dashboard/register', function () {
     return view('dashboard.register');
@@ -23,4 +32,5 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::resource('inventory', ProductController::class)->except(['show', 'destroy']);
 });
