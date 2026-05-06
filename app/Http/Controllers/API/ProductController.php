@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -11,43 +13,87 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request): View
     {
-        return Product::all();
+        $query = Product::query()
+            ->search($request->input('search'))
+            ->category($request->input('category'))
+            ->lowStock((bool) $request->input('low_stock'))
+            ->orderBy('name');
+
+        $products = $query->get();
+
+        $stats = [
+            'total'    => Product::count(),
+            'in_stock' => Product::where('status', 'active')->count(),
+            'low'      => Product::where('status', 'low')->count(),
+            'out'      => Product::where('status', 'out')->count(),
+        ];
+
+        return view('inventory.index', [
+            'products'   => $products,
+            'stats'      => $stats,
+            'categories' => Product::categories(),
+            'filters'    => $request->only(['search', 'category', 'low_stock']),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function create(): View
     {
-        return Product::create($request->all());
+        return view('inventory.create', [
+            'categories' => Product::categories(),
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'name'      => 'required|string|max:255',
+            'brand'     => 'nullable|string|max:255',
+            'sku'       => 'required|string|max:100|unique:products,sku',
+            'category'  => 'required|string|in:' . implode(',', Product::categories()),
+            'stock'     => 'required|integer|min:0',
+            'stock_max' => 'required|integer|min:1',
+            'price'     => 'required|numeric|min:0',
+        ]);
+
+        Product::create($validated);
+
+        return redirect()->route('inventory.index')
+            ->with('success', 'Product added successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function edit(Product $product): View
     {
-        $product = Product::findOrFail($id);
-        $product->update($request->all());
-        return $product;
+        return view('inventory.edit', [
+            'product'    => $product,
+            'categories' => Product::categories(),
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function update(Request $request, Product $product): RedirectResponse
     {
-        Product::destroy($id);
-        return response()->json(['message' => 'Product deleted successfully']);
+        $validated = $request->validate([
+            'name'      => 'required|string|max:255',
+            'brand'     => 'nullable|string|max:255',
+            'sku'       => 'required|string|max:100|unique:products,sku,' . $product->id,
+            'category'  => 'required|string|in:' . implode(',', Product::categories()),
+            'stock'     => 'required|integer|min:0',
+            'stock_max' => 'required|integer|min:1',
+            'price'     => 'required|numeric|min:0',
+        ]);
+
+        $product->update($validated);
+
+        return redirect()->route('inventory.index')
+            ->with('success', 'Product updated successfully.');
+    }
+
+    public function destroy(Product $product): RedirectResponse
+    {
+        $product->delete();
+
+        return redirect()->route('inventory.index')
+            ->with('success', 'Product deleted.');
     }
 }
