@@ -313,7 +313,7 @@
                 <div class="card-title">Inventory</div>
                 <div class="card-desc">Track every item in real-time</div>
                 <div class="card-action">
-                    <a href="#inventory">Manage</a>
+                    <a href="{{ route('inventory.index') }}">Manage</a>
                 </div>
             </div>
 
@@ -322,7 +322,8 @@
                 <div class="card-title">Sales & POS</div>
                 <div class="card-desc">Fast checkout, clear receipts</div>
                 <div class="card-action">
-                    <a href="#sales">Process</a>
+                  <!--  <a href="">Process</a> -->
+                    <a href="/sales">Process</a>
                 </div>
             </div>
 
@@ -331,7 +332,7 @@
                 <div class="card-title">Reports</div>
                 <div class="card-desc">Daily, weekly & monthly insights</div>
                 <div class="card-action">
-                    <a href="#reports">View</a>
+                  <!--  <a href="">View</a> -->
                 </div>
             </div>
 
@@ -340,7 +341,7 @@
                 <div class="card-title">Accounts</div>
                 <div class="card-desc">Multi-user with role control</div>
                 <div class="card-action">
-                    <a href="#accounts">Configure</a>
+                  <!--  <a href="">Configure</a> -->
                 </div>
             </div>
         </div>
