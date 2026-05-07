@@ -9,17 +9,19 @@ class Product extends Model
 {
     protected $fillable = [
         'name',
-        'description',
+        'brand',
         'sku',
         'price',
-        'quantity',
+        'stock',
+        'stock_max',
         'category_id',
         'status',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
-        'quantity' => 'integer',
+        'stock' => 'integer',
+        'stock_max' => 'integer',
     ];
 
     /**
