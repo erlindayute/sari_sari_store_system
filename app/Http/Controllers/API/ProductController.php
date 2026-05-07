@@ -48,13 +48,13 @@ class ProductController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name'      => 'required|string|max:255',
-            'brand'     => 'nullable|string|max:255',
-            'sku'       => 'required|string|max:100|unique:products,sku',
-            'category'  => 'required|string|in:' . implode(',', Product::categories()),
-            'stock'     => 'required|integer|min:0',
-            'stock_max' => 'required|integer|min:1',
-            'price'     => 'required|numeric|min:0',
+            'name'       => 'required|string|max:255',
+            'brand'      => 'nullable|string|max:255',
+            'sku'        => 'required|string|max:100|unique:products,sku',
+            'category_id' => 'required|exists:categories,id',
+            'stock'      => 'required|integer|min:0',
+            'stock_max'  => 'required|integer|min:1',
+            'price'      => 'required|numeric|min:0',
         ]);
 
         Product::create($validated);
@@ -74,18 +74,18 @@ class ProductController extends Controller
     public function update(Request $request, Product $product): RedirectResponse
     {
         $validated = $request->validate([
-            'name'      => 'required|string|max:255',
-            'brand'     => 'nullable|string|max:255',
-            'sku'       => 'required|string|max:100|unique:products,sku,' . $product->id,
-            'category'  => 'required|string|in:' . implode(',', Product::categories()),
-            'stock'     => 'required|integer|min:0',
-            'stock_max' => 'required|integer|min:1',
-            'price'     => 'required|numeric|min:0',
+            'name'       => 'required|string|max:255',
+            'brand'      => 'nullable|string|max:255',
+            'sku'        => 'required|string|max:100|unique:products,sku,' . $product->id,
+            'category_id' => 'required|exists:categories,id',
+            'stock'      => 'required|integer|min:0',
+            'stock_max'  => 'required|integer|min:1',
+            'price'      => 'required|numeric|min:0',
         ]);
 
         $product->update($validated);
 
-        return redirect()->route('inventory.index')
+        return redirect()->route('inventory.update', $product->id)
             ->with('success', 'Product updated successfully.');
     }
 
