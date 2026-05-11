@@ -21,14 +21,21 @@ class ActivityLog extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function record(int $storeId, string $type, string $desc, ?int $userId = null, array $meta = []): void
-    {
-        static::create([
-            'store_id'   => $storeId,
-            'user_id'    => $userId ?? Auth::id(),
-            'type'       => $type,
-            'description' => $desc,
-            'meta'       => $meta ?: null,
+    /**
+     * Record activity log
+     */
+    public static function record(
+        ?int $userId,
+        string $type,
+        string $description,
+        ?array $meta = null
+    ): self {
+
+        return self::create([
+            'user_id' => $userId,
+            'type' => $type,
+            'description' => $description,
+            'meta' => $meta,
         ]);
     }
 }
