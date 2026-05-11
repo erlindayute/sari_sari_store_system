@@ -24,10 +24,10 @@
   --shadow-lg:0 8px 32px rgba(14,13,11,.12);
 }
 html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:14px;line-height:1.5}
-
+ 
 /* ════ LAYOUT ════ */
 .app{display:flex;height:100vh;overflow:hidden}
-
+ 
 /* Sidebar */
 .sidebar{width:var(--sw);background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:50;transition:transform .25s}
 .s-logo{padding:1.2rem 1.1rem 1rem;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:white;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px}
@@ -49,7 +49,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--paper);c
 .s-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0}
 .s-uname{font-size:12px;font-weight:500;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .s-urole{font-size:10px;color:rgba(255,255,255,.3);text-transform:capitalize}
-
+ 
 /* Mobile sidebar */
 .s-overlay{display:none;position:fixed;inset:0;background:rgba(14,13,11,.5);z-index:49;backdrop-filter:blur(2px)}
 @media(max-width:768px){
@@ -58,7 +58,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--paper);c
   .s-overlay.open{display:block}
   .mob-menu{display:flex!important}
 }
-
+ 
 /* Main */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .topbar{height:var(--th);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;gap:.75rem;flex-shrink:0;background:white}
@@ -69,7 +69,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--paper);c
 .icon-btn:hover{background:var(--paper);border-color:var(--border-md)}
 .notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid white}
 .content{flex:1;overflow-y:auto;padding:1.5rem;scroll-behavior:smooth}
-
+ 
 /* ════ COMPONENTS ════ */
 /* Buttons */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;text-decoration:none;transition:all .15s;line-height:1}
@@ -81,14 +81,14 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--paper);c
 .btn-sm{padding:6px 11px;font-size:12px}.btn-xs{padding:4px 9px;font-size:11px;border-radius:6px}
 .btn-icon{padding:7px;width:30px;height:30px;justify-content:center;border-radius:7px}
 .btn:disabled{opacity:.5;cursor:not-allowed;pointer-events:none}
-
+ 
 /* Cards */
 .card{background:white;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .card-hd{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid var(--border)}
 .card-title{font-size:13px;font-weight:600}
 .card-body{padding:1.25rem}
 .pill{font-size:12px;color:var(--text2);background:var(--paper);padding:3px 9px;border-radius:20px;border:1px solid var(--border)}
-
+ 
 /* KPI Cards */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
 .kpi{background:white;border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem;position:relative;overflow:hidden;transition:all .2s;cursor:default}
@@ -101,7 +101,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--paper);c
 .kpi-val{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;line-height:1;margin-bottom:.25rem}
 .kpi-sub{font-size:12px;color:var(--text3)}
 .kpi-sub.up{color:var(--green)}.kpi-sub.dn{color:var(--red)}
-
+ 
 /* Tables */
 .tbl-scroll{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
@@ -112,7 +112,7 @@ tbody tr:last-child{border-bottom:none}
 tbody tr:hover{background:#fafaf6}
 td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .td-c{text-align:center}.td-mut{color:var(--text2)}.td-mono{font-family:'Courier New',monospace;font-size:11px}
-
+ 
 /* Badges */
 .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
 .b-in {background:var(--green-bg);color:var(--green-txt)}
@@ -128,12 +128,12 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .b-cash{background:#e0f2fe;color:#075985}
 .b-pend{background:var(--paper);color:var(--text3);border:1px solid var(--border)}
 .b-active{background:var(--green-bg);color:var(--green-txt)}
-
+ 
 /* Stock bar */
 .stock-cell{display:flex;align-items:center;gap:7px}
 .stock-bar{width:42px;height:5px;background:var(--paper);border-radius:3px;overflow:hidden;flex-shrink:0;border:1px solid var(--border)}
 .stock-fill{height:100%;border-radius:3px}
-
+ 
 /* Filters */
 .filter-bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center}
 .fi{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:white;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s}
@@ -145,7 +145,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .toggle-cb:checked+.toggle-track{background:var(--green)}
 .toggle-track::after{content:'';position:absolute;width:14px;height:14px;background:white;border-radius:50%;top:2px;left:2px;transition:left .18s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .toggle-cb:checked+.toggle-track::after{left:18px}
-
+ 
 /* Modal */
 .overlay{position:fixed;inset:0;background:rgba(14,13,11,.45);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
 .overlay.open{display:flex;animation:fadeIn .2s}
@@ -160,7 +160,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .modal-footer{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)}
 @keyframes slideUp{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
+ 
 /* Form */
 .fg{margin-bottom:1.1rem}
 .fl{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:5px}
@@ -171,25 +171,25 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
 .frow.f3{grid-template-columns:1fr 1fr 1fr}
 .ferr-msg{font-size:12px;color:var(--red-txt);margin-top:4px}
-
+ 
 /* Page header */
 .pg-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap}
 .pg-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;letter-spacing:-.5px;line-height:1.2}
 .pg-sub{font-size:13px;color:var(--text2);margin-top:3px}
 .pg-actions{display:flex;gap:.6rem;align-items:center;flex-shrink:0}
-
+ 
 /* Flash alerts */
 .flash{display:flex;align-items:flex-start;gap:.6rem;padding:.75rem 1rem;border-radius:8px;font-size:13px;margin-bottom:1.25rem}
 .flash-success{background:var(--green-bg);border:1px solid #9fe1cb;color:var(--green-txt)}
 .flash-error{background:var(--red-bg);border:1px solid #f0b4b4;color:var(--red-txt)}
 .flash-warn{background:var(--amber-bg);border:1px solid #f0d08e;color:var(--amber-txt)}
-
+ 
 /* Empty state */
 .empty{text-align:center;padding:3rem 2rem}
 .empty-ico{font-size:44px;margin-bottom:.9rem;opacity:.4;display:block}
 .empty-title{font-size:15px;font-weight:500;margin-bottom:.4rem}
 .empty-desc{font-size:13px;color:var(--text2);max-width:280px;margin:0 auto 1.5rem;line-height:1.7}
-
+ 
 /* Charts */
 .chart-wrap{padding:1rem 1.25rem .75rem}
 .chart-bars{display:flex;align-items:flex-end;gap:6px}
@@ -199,14 +199,14 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .c-bar:hover .tip{display:block}
 .c-labels{display:flex;gap:6px;padding:5px 0 .25rem;border-top:1px solid var(--border);margin-top:2px}
 .c-labels span{flex:1;text-align:center;font-size:10px;color:var(--text3)}
-
+ 
 /* Activity */
 .act-item{display:flex;gap:.9rem;align-items:flex-start;padding:.65rem 0;border-bottom:1px solid var(--border)}
 .act-item:last-child{border:none}
 .act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
 .act-text{flex:1;font-size:12px;line-height:1.5}
 .act-time{font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0;margin-top:3px}
-
+ 
 /* Responsive */
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.content{padding:1rem}.frow{grid-template-columns:1fr}}
@@ -214,9 +214,9 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 @stack('styles')
 </head>
 <body>
-
+ 
 <div class="s-overlay" id="sOverlay" onclick="closeSidebar()"></div>
-
+ 
 <div class="app">
   <!-- ══ SIDEBAR ══ -->
   <aside class="sidebar" id="sidebar">
@@ -230,7 +230,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
       <a class="s-item {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
         <span class="s-icon">▦</span> Dashboard
       </a>
-
+ 
       @if(auth()->user()->can_access('inventory'))
       <div class="s-section">Store</div>
       <a class="s-item {{ request()->routeIs('inventory.*') ? 'active' : '' }}" href="{{ route('inventory.index') }}">
@@ -241,18 +241,18 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
         @endif
       </a>
       @endif
-
+ 
       <a class="s-item {{ request()->routeIs('pos.*') ? 'active' : '' }}" href="{{ route('pos.index') }}">
         <span class="s-icon">🧾</span> POS / Sales
       </a>
-
+ 
       @if(auth()->user()->can_access('reports'))
       <div class="s-section">Analytics</div>
       <a class="s-item {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
         <span class="s-icon">📊</span> Reports
       </a>
       @endif
-
+ 
       @if(auth()->user()->can_access('utang'))
       <a class="s-item {{ request()->routeIs('utang.*') ? 'active' : '' }}" href="{{ route('utang.index') }}">
         <span class="s-icon">🤝</span> Utang
@@ -260,15 +260,15 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
         @if($utangOwed > 0)<span class="s-badge">{{ $utangOwed }}</span>@endif
       </a>
       @endif
-
+ 
       <div class="s-divider"></div>
-
+ 
       @if(auth()->user()->can_access('users'))
       <a class="s-item {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
         <span class="s-icon">👥</span> Team
       </a>
       @endif
-
+ 
       @if(auth()->user()->can_access('settings'))
       <a class="s-item {{ request()->routeIs('settings.*') ? 'active' : '' }}" href="{{ route('settings.index') }}">
         <span class="s-icon">⚙</span> Settings
@@ -285,7 +285,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
       </a>
     </div>
   </aside>
-
+ 
   <!-- ══ MAIN ══ -->
   <div class="main">
     <div class="topbar">
@@ -301,7 +301,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
         </form>
       </div>
     </div>
-
+ 
     <div class="content">
       {{-- Flash messages --}}
       @if(session('success'))
@@ -319,22 +319,22 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
           </div>
         </div>
       @endif
-
+ 
       @yield('content')
     </div>
   </div>
 </div>
-
+ 
 {{-- Modals slot --}}
 @stack('modals')
-
+ 
 <script>
 function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sOverlay').classList.add('open')}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sOverlay').classList.remove('open')}
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(m=>m.classList.remove('open'))});
-
+ 
 // Chart helper
 function buildChart(id, data, labels, color='#1d9e75', height='160px'){
   const el=document.getElementById(id); if(!el)return;
