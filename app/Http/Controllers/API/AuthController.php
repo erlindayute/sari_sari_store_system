@@ -63,7 +63,10 @@ class AuthController extends Controller
 
 
     /* ── Login ── */
-    //public function showLogin(): View { return view('auth.login'); }
+    public function showLogin()
+    {
+        return view('auth.login');
+    }
     public function login(LoginRequest $request)
     {
         $credentials = $request->validate([
