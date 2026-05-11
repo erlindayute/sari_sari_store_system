@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Product extends Model
 {
     protected $fillable = [
-        'name',
+        'product_name',
         'brand',
         'sku',
         'price',
@@ -41,7 +41,7 @@ class Product extends Model
             return $query;
         }
 
-        return $query->where('name', 'like', "%{$search}%")
+        return $query->where('product_name', 'like', "%{$search}%")
             ->orWhere('sku', 'like', "%{$search}%");
     }
 
@@ -66,7 +66,7 @@ class Product extends Model
             return $query;
         }
 
-        return $query->where('quantity', '<', 10);
+        return $query->where('stock', '<', 10);
     }
 
     /**
