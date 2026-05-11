@@ -25,12 +25,12 @@ class InventoryController extends Controller
             ->lowStock($request->boolean('low_stock'));
 
         // Sorting
-        match ($request->input('sort', 'name')) {
+        match ($request->input('sort', 'product_name')) {
             'stock_asc'  => $query->orderBy('stock'),
             'stock_desc' => $query->orderByDesc('stock'),
             'price_asc'  => $query->orderBy('price'),
             'price_desc' => $query->orderByDesc('price'),
-            default      => $query->orderBy('name'),
+            default      => $query->orderBy('product_name'),
         };
 
         $products = $query->get();
@@ -153,15 +153,15 @@ class InventoryController extends Controller
 
     // public function exportCsv(): StreamedResponse
     //{
-    //  $store    = Auth::user()->store;
-    // $products = Product::forStore($store->id)->active()->orderBy('name')->get();
+    //   $store    = Auth::user()->store;
+    //  $products = Product::forStore($store->id)->active()->orderBy('name')->get();
 
     //return response()->streamDownload(function () use ($products) {
     //  $handle = fopen('php://output', 'w');
     //fputcsv($handle, ['Name', 'Brand', 'SKU', 'Category', 'Stock', 'Max Stock', 'Price', 'Cost Price', 'Status']);
     //foreach ($products as $p) {
     //  fputcsv($handle, [$p->name, $p->brand, $p->sku, $p->category, $p->stock, $p->stock_max, $p->price, $p->cost_price, $p->status]);
-    // }
+    //}
     //fclose($handle);
     //}, 'inventory_' . now()->format('Y-m-d') . '.csv');
     //}
