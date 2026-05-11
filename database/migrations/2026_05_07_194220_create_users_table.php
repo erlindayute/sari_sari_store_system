@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
+            $table->boolean('is_email_verified')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('avatar')->nullable();
-            $table->string('is_active')->default(true);
+            $table->enum('role', ['owner', 'admin', 'manager', 'cashier'])->default('owner');
+            $table->enum('status', ['active', 'pending', 'suspended'])->default('active');
+            $table->timestamp('last_login_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

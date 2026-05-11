@@ -338,7 +338,7 @@
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->sku }}</td>
                         <td>{{ $product->category->name ?? 'N/A' }}</td>
-                        <td>{{ $product->quantity }}</td>
+                        <td>{{ $product->stock }}</td>
                         <td>${{ number_format($product->price, 2) }}</td>
                         <td>
                             <span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 700;

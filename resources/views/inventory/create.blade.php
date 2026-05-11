@@ -303,28 +303,22 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description">{{ old('description') }}</textarea>
-                    @error('description')<span class="error-message">{{ $message }}</span>@enderror
-                </div>
-
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="category_id">Category</label>
-                        <select id="category_id" name="category_id">
+                        <label for="brand">Brand</label>
+                        <input type="text" id="brand" name="brand" value="{{ old('brand') }}">
+                        @error('brand')<span class="error-message">{{ $message }}</span>@enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category_id">Category *</label>
+                        <select id="category_id" name="category_id" required>
                             <option value="">Select Category</option>
                             @foreach($categories as $id => $name)
                                 <option value="{{ $id }}" {{ old('category_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
                             @endforeach
                         </select>
                         @error('category_id')<span class="error-message">{{ $message }}</span>@enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="quantity">Quantity *</label>
-                        <input type="number" id="quantity" name="quantity" value="{{ old('quantity') }}" min="0" required>
-                        @error('quantity')<span class="error-message">{{ $message }}</span>@enderror
                     </div>
                 </div>
 
@@ -333,6 +327,20 @@
                         <label for="price">Price *</label>
                         <input type="number" id="price" name="price" value="{{ old('price') }}" step="0.01" min="0" required>
                         @error('price')<span class="error-message">{{ $message }}</span>@enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stock">Stock *</label>
+                        <input type="number" id="stock" name="stock" value="{{ old('stock') }}" min="0" required>
+                        @error('stock')<span class="error-message">{{ $message }}</span>@enderror
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stock_max">Max Stock *</label>
+                        <input type="number" id="stock_max" name="stock_max" value="{{ old('stock_max') }}" min="1" required>
+                        @error('stock_max')<span class="error-message">{{ $message }}</span>@enderror
                     </div>
 
                     <div class="form-group">
