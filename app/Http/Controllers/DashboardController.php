@@ -15,6 +15,8 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
+
+
         $store = Auth::user()->store;
         $today = Carbon::today();
 
