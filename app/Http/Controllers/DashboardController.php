@@ -17,7 +17,14 @@ class DashboardController extends Controller
     {
 
 
-        $store = Auth::user()->store;
+        $user = Auth::user();
+
+        // Check if user has a store
+        if (!$user->store) {
+            return view('dashboard.no-store');
+        }
+
+        $store = $user->store;
         $today = Carbon::today();
 
         // KPIs
