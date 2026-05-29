@@ -24,18 +24,15 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        $remember = $request->has('remember');
 
-        if (!Auth::attempt($credentials, $remember)) {
+        if (Auth::attempt($credentials)) {
 
-            return back()->withErrors([
-                'email' => 'Invalid email or password.',
-            ])->onlyInput('email');
+            $request->session()->regenerate();
+            return redirect()->route('dashboard');
         }
-
-        $request->session()->regenerate();
-
-        return redirect()->route('dashboard');
+        return back()->withErrors([
+            'email' => 'Invalid email or password.',
+        ]);
     }
 
     public function showlogin()
@@ -50,62 +47,47 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $request->validated([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:8',
-            'store_name' => 'required|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'province' => 'nullable|string|max:255',
-            'plan' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         // Create store first
         $store = Store::create([
             'code'          => 'STORE-' . strtoupper(Str::random(5)),
-            'city'          => $request->city ?? null,
-            'province'      => $request->province ?? null,
-            'plan'          => $request->plan ?? 'free',
+            'city'          => $validated['store_city'] ?? null,
+            'province'      => $validated['store_province'] ?? null,
+            'plan'          => $validated['plan'] ?? 'free',
             'trial_ends_at' => now()->addDays(60),
         ]);
 
         // Create owner user
         $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email'    => $request->email,
-            'phone'    => $request->phone ?? null,
-            'password' => Hash::make($request->password),
-            'role'     => 'owner',
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role'     => $validated['role'] ?? 'owner',
             'status'   => 'active',
             'store_id' => $store->id,
         ]);
 
-        // Create Store
+        // Link user to store
+        $store->update(['user_id' => $user->id, 'store_name' => $validated['store_name']]);
 
-        $Store = Store::create([
+        // Record activity
+        ActivityLog::create([
+            'store_id' => $store->id,
             'user_id' => $user->id,
-            'store_name' => $request->store_name,
-            'code' => 'STORE-' . strtoupper(Str::random(5)),
-            'city' => $request->city ?? null,
-            'province' => $request->province ?? null,
-            'plan' => $request->plan ?? 'free',
-            'trial_ends_at' => now()->addDays(60),
+            'type' => 'system',
+            'description' => 'Store created · ' . $store->store_name,
         ]);
 
-        Auth::login($user);
-        $request->session()->regenerate();
-        return redirect()->route('dashboard')->with('onboarding', true);
+        // Send email verification notification
+        $user->sendEmailVerificationNotification();
 
-
-        $store->update(['owner_id' => $user->id]);
-        ActivityLog::record($store->id, 'system', 'Store created · ' . $store->name, $user->id);
-
+        // Log in the user
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard')->with('onboarding', true);
+        return redirect()->route('dashboard')->with('success', 'Registration successful! Please verify your email.');
     }
 
     public function logout(Request $request)
@@ -114,6 +96,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('dashboard.home');
+        return redirect()->route('dashboard');
     }
 }
