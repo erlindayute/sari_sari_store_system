@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Role;
-use App\Models\PasswordResetToken;
+//use App\Models\PasswordResetToken;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,12 +25,14 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'phone',
         'password',
-        'avatar',
-        'is_active',
+        'role',
+        'status',
+        'store_id',
     ];
 
 
@@ -55,7 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_active' => 'boolean',
+            'status' => 'string',
         ];
     }
 
@@ -67,15 +69,20 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     // Password Reset tokens belonging to this user.
-    public function passwordResets()
-    {
-        return $this->hasMany(PasswordResetToken::class, 'email', 'email');
-    }
+    // public function passwordResets()
+    //{
+    //   return $this->hasMany(PasswordResetToken::class, 'email', 'email');
+    //}
 
     // Helpers ------------
 
     public function hasRole(string $role): bool
     {
         return $this->roles()->where('name', $role)->exists();
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 }

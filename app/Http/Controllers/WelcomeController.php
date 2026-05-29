@@ -31,6 +31,6 @@ class WelcomeController extends Controller
             ],
         ];
 
-        return view('welcome', compact('features'));
+        return view('.welcome', compact('features'));
     }
 }

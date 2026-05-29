@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         $request->validate([
             'email' => 'required|email|unique:users,email',
-            'role'  => 'required|in:admin,manager,cashier',
+            'role'  => 'required|in:owner,admin,manager,cashier',
         ]);
 
         $store = Auth::user()->store;
@@ -33,7 +33,7 @@ class UserController extends Controller
         $user = User::create([
             'name'     => 'Invited user',
             'email'    => $request->email,
-            'password' => Hash::make($temp),
+            'password' => Hash::make($request->password),
             'role'     => $request->role,
             'status'   => 'pending',
             'store_id' => $store->id,
@@ -49,7 +49,7 @@ class UserController extends Controller
     {
         abort_if($user->store_id !== Auth::user()->store_id, 403);
         abort_if($user->role === 'owner', 403, 'Cannot change the owner role.');
-        $request->validate(['role' => 'required|in:admin,manager,cashier']);
+        $request->validate(['role' => 'required|in:owner,admin,manager,cashier']);
         $user->update(['role' => $request->role]);
         return back()->with('success', "{$user->name}'s role updated.");
     }

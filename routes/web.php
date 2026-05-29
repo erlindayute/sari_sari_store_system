@@ -1,86 +1,252 @@
 <?php
 
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PosController;
-use App\Http\Controllers\ReportsController;
-use App\Http\Controllers\UtangController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\PasswordController;
-use App\Http\Controllers\API\InventoryController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
-/* ── Public routes ── */
+/*
+|--------------------------------------------------------------------------
+| Controllers
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/', fn() => redirect()->route('dashboard'))->name('home');
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PosController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UtangController;
+use App\Http\Controllers\PasswordController;
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+
+
+/*
+|--------------------------------------------------------------------------
+| Guest Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('guest')->group(function () {
-    Route::get('/register',        [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register',        [AuthController::class, 'register']);
-    Route::get('/login',           [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login',           [AuthController::class, 'login']);
-    Route::get('/forgot-password', [AuthController::class, 'showForgot'])->name('password.request');
-    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
-    Route::get('/reset-password/{token}', [AuthController::class, 'showReset'])->name('password.reset');
-    Route::post('/reset-password',  [AuthController::class, 'resetPassword'])->name('password.update');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication
+    |--------------------------------------------------------------------------
+    */
+    // Login
+    Route::get('/login', [AuthController::class, 'showlogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+
+    // Register
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+
+    // Forgot Password
+    Route::get('/forgot-password', [PasswordController::class, 'showForgot'])->name('password.request');
+    Route::post('/forgot-password', [PasswordController::class, 'sendResetLink'])->name('password.email');
+
+    // Reset Password
+    Route::get('/reset-password/{token}', [PasswordController::class, 'showReset'])
+        ->name('password.reset');
+
+    Route::post('/reset-password', [PasswordController::class, 'resetPassword'])
+        ->name('password.update');
 });
 
-/* ── Authenticated routes ── */
-Route::middleware(['auth'])->group(function () {
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes
+|--------------------------------------------------------------------------
+*/
 
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Dashboard
+
+Route::middleware('auth')->group(function () {
+    /*
+    |--------------------------------------------------------------------------
+    | Email Verification
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('status', 'verification-link-sent');
+    })->name('verification.send');
+
+    Route::get('/email/verify/{id}/{hash}', function (Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/dashboard')->with('status', 'email-verified');
+    })->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Inventory
-    Route::prefix('inventory')->name('inventory.')->group(function () {
-        Route::get('/',                          [InventoryController::class, 'index'])->name('index');
-        Route::post('/',                         [InventoryController::class, 'store'])->name('store');
-        Route::put('/{product}',                 [InventoryController::class, 'update'])->name('update');
-        Route::delete('/{product}',              [InventoryController::class, 'destroy'])->name('destroy');
-        Route::post('/{product}/adjust-stock',   [InventoryController::class, 'adjustStock'])->name('adjust');
-        // Route::get('/export/csv',                [InventoryController::class, 'exportCsv'])->name('export');
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | Logout
+    |--------------------------------------------------------------------------
+    */
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
 
-    // POS
-    Route::prefix('pos')->name('pos.')->group(function () {
-        Route::get('/',          [PosController::class, 'index'])->name('index');
-        Route::post('/checkout', [PosController::class, 'checkout'])->name('checkout');
-        Route::get('/receipt/{transaction}', [PosController::class, 'receipt'])->name('receipt');
-    });
 
-    // Reports (manager+ only)
-    Route::prefix('reports')->name('reports.')->middleware('can_access:reports')->group(function () {
-        Route::get('/',           [ReportsController::class, 'index'])->name('index');
-        Route::get('/export/csv', [ReportsController::class, 'exportCsv'])->name('export');
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | Inventory Management
+    |--------------------------------------------------------------------------
+    */
 
-    // Utang
-    Route::prefix('utang')->name('utang.')->group(function () {
-        Route::get('/',                    [UtangController::class, 'index'])->name('index');
-        Route::post('/',                   [UtangController::class, 'store'])->name('store');
-        Route::post('/{entry}/payment',    [UtangController::class, 'recordPayment'])->name('payment');
-        Route::delete('/{entry}',          [UtangController::class, 'destroy'])->name('destroy');
-        Route::get('/export/csv',          [UtangController::class, 'exportCsv'])->name('export');
-    });
+    Route::prefix('inventory')
+        ->name('inventory.')
+        ->controller(InventoryController::class)
+        ->group(function () {
 
-    // Users (owner only)
-    Route::prefix('users')->name('users.')->middleware('can_access:users')->group(function () {
-        Route::get('/',              [UserController::class, 'index'])->name('index');
-        Route::post('/invite',       [UserController::class, 'invite'])->name('invite');
-        Route::put('/{user}/role',   [UserController::class, 'updateRole'])->name('role');
-        Route::delete('/{user}',     [UserController::class, 'destroy'])->name('destroy');
-    });
+            Route::get('/', 'index')->name('index');
 
-    // Settings (owner only)
-    Route::prefix('settings')->name('settings.')->middleware('can_access:settings')->group(function () {
-        Route::get('/',        [SettingsController::class, 'index'])->name('index');
-        Route::put('/store',   [SettingsController::class, 'updateStore'])->name('store');
-        Route::put('/account', [SettingsController::class, 'updateAccount'])->name('account');
-    });
+            Route::post('/', 'store')->name('store');
 
-    // Password update (all authenticated users)
-    Route::post('/password', [PasswordController::class, 'update'])->name('password.change');
+            Route::put('/{product}', 'update')->name('update');
+
+            Route::delete('/{product}', 'destroy')->name('destroy');
+
+            Route::post('/{product}/adjust-stock', 'adjustStock')
+                ->name('adjust');
+
+            // Route::get('/export/csv', 'exportCsv')
+            //     ->name('export');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Point of Sale (POS)
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('pos')
+        ->name('pos.')
+        ->controller(PosController::class)
+        ->group(function () {
+
+            Route::get('/', 'index')->name('index');
+
+            Route::post('/checkout', 'checkout')
+                ->name('checkout');
+
+            Route::get('/receipt/{transaction}', 'receipt')
+                ->name('receipt');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reports
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('can_access:reports')
+        ->prefix('reports')
+        ->name('reports.')
+        ->controller(ReportsController::class)
+        ->group(function () {
+
+            Route::get('/', 'index')->name('index');
+
+            Route::get('/export/csv', 'exportCsv')
+                ->name('export');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Utang Management
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('utang')
+        ->name('utang.')
+        ->controller(UtangController::class)
+        ->group(function () {
+
+            Route::get('/', 'index')->name('index');
+
+            Route::post('/', 'store')->name('store');
+
+            Route::post('/{entry}/payment', 'recordPayment')
+                ->name('payment');
+
+            Route::delete('/{entry}', 'destroy')
+                ->name('destroy');
+
+            Route::get('/export/csv', 'exportCsv')
+                ->name('export');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Management
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('can_access:users')
+        ->prefix('users')
+        ->name('users.')
+        ->controller(UserController::class)
+        ->group(function () {
+
+            Route::get('/', 'index')->name('index');
+
+            Route::post('/invite', 'invite')
+                ->name('invite');
+
+            Route::put('/{user}/role', 'updateRole')
+                ->name('role');
+
+            Route::delete('/{user}', 'destroy')
+                ->name('destroy');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Settings
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('can_access:settings')
+        ->prefix('settings')
+        ->name('settings.')
+        ->controller(SettingsController::class)
+        ->group(function () {
+
+            Route::get('/', 'index')->name('index');
+
+            Route::put('/store', 'updateStore')
+                ->name('store');
+
+            Route::put('/account', 'updateAccount')
+                ->name('account');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password Update
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/password', [PasswordController::class, 'update'])
+        ->name('password.change');
 });

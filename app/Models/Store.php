@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Store extends Model
 {
     protected $fillable = [
-        'name',
+        'user_id',
+        'store_name',
         'code',
         'city',
         'province',
@@ -18,15 +19,15 @@ class Store extends Model
         'low_stock_threshold',
         'plan',
         'trial_ends_at',
-        'owner_id',
+        //'owner_id',
     ];
 
     protected $casts = ['trial_ends_at' => 'datetime'];
 
-    public function owner(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'owner_id');
-    }
+    //public function owner(): BelongsTo
+    //{
+    //  return $this->belongsTo(User::class, 'owner_id');
+    // }
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
