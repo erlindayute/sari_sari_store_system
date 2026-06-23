@@ -19,6 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Routing is configured in bootstrap/app.php for Laravel 11+
     }
 }
