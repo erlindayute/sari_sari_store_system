@@ -25,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
+        'store_id',
         'first_name',
         'last_name',
         'email',
@@ -32,7 +33,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'status',
-        'store_id',
+
     ];
 
 
@@ -55,7 +56,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            //  'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'status' => 'string',
         ];
@@ -81,8 +82,26 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->roles()->where('name', $role)->exists();
     }
 
+    /**
+     * Check if user can access a specific feature
+     */
+    public function can_access(string $feature): bool
+    {
+        // For now, all authenticated users can access all features
+        // This can be expanded with role-based access control
+        return true;
+    }
+
     public function store()
     {
         return $this->belongsTo(Store::class);
+    }
+
+    /**
+     * Get the user's full name
+     */
+    public function getNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
     }
 }
