@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Store extends Model
 {
     protected $fillable = [
-        'user_id',
+        // 'user_id',
         'store_name',
         'code',
         'city',
         'province',
         'currency',
-        'timezone',
-        'low_stock_threshold',
+        // 'timezone',
+        //'low_stock_threshold',
         'plan',
         'trial_ends_at',
         //'owner_id',
@@ -52,5 +52,13 @@ class Store extends Model
     public function isOnTrial(): bool
     {
         return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+    }
+
+    /**
+     * Get store name as 'name' attribute for compatibility
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->store_name ?? '';
     }
 }
