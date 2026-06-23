@@ -51,6 +51,7 @@ class AuthController extends Controller
 
         // Create store first
         $store = Store::create([
+            'store_name'    => $validated['store_name'],
             'code'          => 'STORE-' . strtoupper(Str::random(5)),
             'city'          => $validated['store_city'] ?? null,
             'province'      => $validated['store_province'] ?? null,
@@ -69,6 +70,9 @@ class AuthController extends Controller
             'store_id' => $store->id,
         ]);
 
+        //Automatically login the user
+        Auth::login($user);
+
         // Link user to store
         $store->update(['user_id' => $user->id, 'store_name' => $validated['store_name']]);
 
@@ -78,17 +82,22 @@ class AuthController extends Controller
             'user_id' => $user->id,
             'type' => 'system',
             'description' => 'Store created · ' . $store->store_name,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
         ]);
 
         // Send email verification notification
-        $user->sendEmailVerificationNotification();
+        // $user->sendEmailVerificationNotification();
 
-        // Log in the user
-        Auth::login($user);
+        //Regenerate session
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard')->with('success', 'Registration successful! Please verify your email.');
+        // Redirect to login (do NOT auto-login)
+        return redirect()->route('home')
+            ->with('success', 'Registration successful! Please check your email to verify your account, then sign in.');
     }
+
+
 
     public function logout(Request $request)
     {
@@ -96,6 +105,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('dashboard');
+        return redirect()->route('login')->with('success', 'You have been logged out successfully.');
     }
 }
