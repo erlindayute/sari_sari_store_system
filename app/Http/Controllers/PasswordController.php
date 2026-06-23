@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\View\View;
 
 class PasswordController extends Controller
 {
@@ -47,5 +50,83 @@ class PasswordController extends Controller
         //]);
 
         return back()->with('success', 'Password updated successfully.');
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // STEP 1 — Show the "Forgot password" form
+    // GET /forgot-password  →  named: password.request
+    // ─────────────────────────────────────────────────────────
+    public function showForgot(): View
+    {
+        return view('auth.forgot');
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // STEP 2 — Handle the email submission
+    // POST /forgot-password  →  named: password.email
+    // ─────────────────────────────────────────────────────────
+    public function sendResetLink(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        // Laravel's built-in broker sends the reset email.
+        // We ALWAYS return the same success message to prevent
+        // email enumeration attacks (don't tell the user if
+        // the email exists or not).
+        Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return back()->with(
+            'status',
+            __('If that email address is registered, we\'ve sent a password reset link.')
+        );
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // STEP 3 — Show the "Set new password" form
+    // GET /reset-password/{token}  →  named: password.reset
+    // ─────────────────────────────────────────────────────────
+    public function showReset(string $token): View
+    {
+        return view('auth.reset', [
+            'token' => $token,
+            'email' => request()->query('email', ''),
+        ]);
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // STEP 4 — Handle the new password submission
+    // POST /reset-password  →  named: password.update
+    // ─────────────────────────────────────────────────────────
+    public function resetPassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'token'                 => ['required'],
+            'email'                 => ['required', 'email'],
+            'password'              => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                ])->save();
+
+                // Optional: fire PasswordReset event
+                event(new \Illuminate\Auth\Events\PasswordReset($user));
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? redirect()
+            ->route('login')
+            ->with('success', '✓ Password reset successfully. Please sign in.')
+            : back()
+            ->withErrors(['email' => __($status)])
+            ->withInput($request->only('email'));
     }
 }
