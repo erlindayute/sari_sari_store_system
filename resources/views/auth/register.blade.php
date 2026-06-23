@@ -180,10 +180,10 @@
         <!-- STEP 3: Success -->
         <div id="panelStep3" style="display:none;text-align:center;padding:1rem 0">
           <div style="font-size:56px;margin-bottom:1rem;animation:pop .4s ease">🎉</div>
-          <div class="auth-title" style="text-align:center">You're all set!</div>
-          <p style="color:var(--text2);font-size:14px;margin:1rem 0 1.75rem;line-height:1.7">Your TindaHub account and store are ready. We've sent a verification email to <strong id="confirmedEmail"></strong></p>
-          <a href="{{ route('dashboard') }}" class="btn-submit" style="display:block;text-decoration:none;text-align:center">Go to my dashboard →</a>
-          <p style="font-size:12px;color:var(--text3);margin-top:1rem">Check your inbox to verify your email (or skip for now)</p>
+          <div class="auth-title" style="text-align:center">Registration Complete!</div>
+          <p style="color:var(--text2);font-size:14px;margin:1rem 0 1.75rem;line-height:1.7">Your TindaHub account and store have been created successfully. We've sent a verification email to <strong id="confirmedEmail"></strong></p>
+          <a href="{{ route('login') }}" class="btn-submit" style="display:block;text-decoration:none;text-align:center">Sign In to Your Account →</a>
+          <p style="font-size:12px;color:var(--text3);margin-top:1rem">Please verify your email first, then sign in with your credentials</p>
         </div>
 
     </form>

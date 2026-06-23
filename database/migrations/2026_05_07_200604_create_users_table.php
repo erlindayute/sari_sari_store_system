@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('store_id')->nullable()->constrained('stores')->onDelete('cascade');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
-            $table->boolean('is_email_verified')->default(false);
-            $table->timestamp('email_verified_at')->nullable();
+            // $table->boolean('is_email_verified')->default(false);
+            //$table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['owner', 'admin', 'manager', 'cashier'])->default('owner');
             $table->enum('status', ['active', 'pending', 'suspended'])->default('active');
@@ -49,7 +50,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };

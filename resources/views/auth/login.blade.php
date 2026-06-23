@@ -31,6 +31,18 @@
             <a href="{{ route('register') }}">Sign up free</a>
         </div>
 
+        @if ($errors->any())
+            <div style="background:#fee;border:1px solid #fcc;color:#c33;padding:12px;border-radius:8px;margin-bottom:1rem;font-size:13px">
+                <strong>⚠ {{ $errors->first() }}</strong>
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div style="background:#efe;border:1px solid #cfc;color:#3c3;padding:12px;border-radius:8px;margin-bottom:1rem;font-size:13px">
+                <strong>✓ {{ session('success') }}</strong>
+            </div>
+        @endif
+
         <!-- LOGIN FORM -->
         <form method="POST" action="{{ route('login.submit') }}" onsubmit="validateLoginForm(event)">
             @csrf
